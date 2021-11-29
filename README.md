@@ -13,7 +13,7 @@
 Welcome to the 'A java Developer Journey into Apache Cassandra™…' workshop! In this 4 hours workshop,we will show you the most important fundamentals and basics of the powerful distributed NoSQL database Apache Cassandra.
 <!--- ENDEXCLUDE --->
 
-## 📋 Table of contents
+## 📋 Table of content
 
 <img src="img/splash.png?raw=true" align="right" width="400px"/>
 
@@ -21,8 +21,8 @@ Welcome to the 'A java Developer Journey into Apache Cassandra™…' workshop! 
 2. [Frequently asked questions](#2-frequently-asked-questions)
 3. [Materials for the Session](#3-materials-for-the-session)
 4. [Create your Database](#4-create-astra-db-instance)
-5. [Create a Table](#)
-6. [Execute CRUD Operations](#)
+5. [Create a Table](#5-create-a-table)
+6. [Execute CRUD Operations](#6-execute-crud-operations)
 7. [Data Modelling](#)
 8. [Native Drivers](#)
 9. [Drivers Object Mapping](#)
@@ -226,7 +226,7 @@ We started by creating the **_users_by_city_** table earlier, but now we need to
 
 📘 **Commands to execute**
 
-```
+```sql
 CREATE TABLE IF NOT EXISTS comments_by_user (
     userid uuid,
     commentid timeuuid,
@@ -248,7 +248,7 @@ Then **_DESCRIBE_** your keyspace tables to ensure they are both there.
 
 📘 **Command to execute**
 
-```
+```sql
 desc tables;
 ```
 
@@ -256,14 +256,14 @@ desc tables;
 
 <img width="1000" alt="Screenshot 2020-09-30 at 13 59 50" src="https://user-images.githubusercontent.com/20337262/94688257-3bfc5d00-0325-11eb-9ec6-40d2596fb71e.png">
 
-**✅ Step 3b. (C)RUD = create = insert data**
+**✅ Step 6b. (C)RUD = create = insert data**
 
 Our tables are in place so let's put some data in them. This is done with the **INSERT** statement. We'll start by inserting data into the **_comments_by_user_** table.
 
 📘 **Commands to execute**
 
-```
-// Comment for a given user
+```sql
+/* Comment for a given user */
 INSERT INTO comments_by_user (
   userid, //uuid: unique id for a user
   commentid, //timeuuid: unique uuid + timestamp
@@ -277,13 +277,13 @@ VALUES (
   'I so grew up in the 80''s'
 );
 
-// More comments for the same user for the same video
+/* More comments for the same user for the same video */
 INSERT INTO comments_by_user (userid, commentid, videoid, comment)
 VALUES (11111111-1111-1111-1111-111111111111, NOW(), 12345678-1234-1111-1111-111111111111, 'I keep watching this video');
 INSERT INTO comments_by_user (userid, commentid, videoid, comment)
 VALUES (11111111-1111-1111-1111-111111111111, NOW(), 12345678-1234-1111-1111-111111111111, 'Soo many comments for the same video');
 
-// A comment from another user for the same video
+/* A comment from another user for the same video */
 INSERT INTO comments_by_user (userid, commentid, videoid, comment)
 VALUES (22222222-2222-2222-2222-222222222222, NOW(), 12345678-1234-1111-1111-111111111111, 'I really like this video too!');
 ```
@@ -294,8 +294,8 @@ Ok, let's **INSERT** more this time using the **_comments_by_video_** table.
 
 📘 **Commands to execute**
 
-```
-// Comment for a given video
+```sql
+/* Comment for a given video */
 INSERT INTO comments_by_video (
   videoid, //uuid: id for a given video
   commentid, //timeuuid: unique uuid + timestamp
@@ -309,27 +309,30 @@ VALUES (
   'This is such a cool video'
 );
 
-// More comments for the same video by different users
+/* More comments for the same video by different users */
 INSERT INTO comments_by_video (videoid, commentid, userid, comment)
 VALUES(12345678-1234-1111-1111-111111111111, NOW(), 22222222-2222-2222-2222-222222222222, 'Such a killr edit');
-// Ignore the hardcoded value for "commentid" instead of NOW(), we'll get to that later.
+
+/* Ignore the hardcoded value for "commentid" instead of NOW(), we'll get to that later.*/
 INSERT INTO comments_by_video (videoid, commentid, userid, comment)
 VALUES(12345678-1234-1111-1111-111111111111, 494a3f00-e966-11ea-84bf-83e48ffdc8ac, 77777777-7777-7777-7777-777777777777, 'OMG that guy Patrick is such a geek!');
 
-// A comment for a different video from another user
+/* A comment for a different video from another user*/
 INSERT INTO comments_by_video (videoid, commentid, userid, comment)
 VALUES(08765309-1234-9999-9999-111111111111, NOW(), 55555555-5555-5555-5555-555555555555, 'Never thought I''d see a music video about databases');
 ```
 
-**✅ Step 3c. C(R)UD = read = read data**
+**✅ Step 6c. C(R)UD = read = read data**
 
 Now that we've inserted a set of data, let's take a look at how to read that data back out. This is done with a **SELECT** statement. In its simplest form we could just execute a statement like the following **_**cough_** **_**cough_**:
-```
+
+```sql
 SELECT * FROM comments_by_user;
 ```
 
 You may have noticed my coughing fit a moment ago. Even though you can execute a **SELECT** statement with no partition key definied this is NOT something you should do when using Apache Cassandra. We are doing it here for illustration purposes only and because our dataset only has a handful of values. Given the data we inserted earlier a more proper statement would be something like:
-```
+
+```sql
 SELECT * FROM comments_by_user WHERE userid = 11111111-1111-1111-1111-111111111111;
 ```
 
@@ -339,11 +342,11 @@ Ok, so with that out of the way let's **READ** the data we _"created"_ earlier w
 
 📘 **Commands to execute**
 
-```
-// Read all data from the comments_by_user table
+```sql
+/* Read all data from the comments_by_user table*/
 SELECT * FROM comments_by_user;
 
-// Read all data from the comments_by_video table
+/* Read all data from the comments_by_video table */
 SELECT * FROM comments_by_video;
 ```
 
@@ -362,12 +365,13 @@ select userid, dateOf(commentid) as datetime, videoid, comment from comments_by_
 ```
 
 
-**✅ Step 3d. CR(U)D = update = update data**
+**✅ Step 6d. CR(U)D = update = update data**
 
 At this point we've **_CREATED_** and **_READ_** some data, but what happens when you want to change some existing data to some new value? That's where **UPDATE** comes into play.
 
 Let's take one of the records we created earlier and modify it. If you remember earlier we **_INSERTED_** the following record in the **comments_by_video** table.
-```
+
+```sql
 INSERT INTO comments_by_video (
   videoid, 
   commentid, 
@@ -383,7 +387,8 @@ VALUES(
 ```
 
 Let's also take a look at the **comments_by_video** table we created earlier. In order to **UPDATE** an existing record we need to know the primary key used to **CREATE** the record.
-```
+
+```sql
 CREATE TABLE IF NOT EXISTS comments_by_video (
     videoid   uuid,
     commentid timeuuid,
@@ -400,7 +405,7 @@ We have the information that we need for the update. With that, the command is e
 
 📘 **Commands to execute**
 
-```
+```sql
 UPDATE comments_by_video 
 SET comment = 'OMG that guy Patrick is on fleek' 
 WHERE videoid = 12345678-1234-1111-1111-111111111111 AND commentid = 494a3f00-e966-11ea-84bf-83e48ffdc8ac;
@@ -414,7 +419,7 @@ SELECT * FROM comments_by_video;
 
 That's it. All that's left now is to **DELETE** some data.
 
-**✅ Step 3e. CRU(D) = delete = remove data**
+**✅ Step 6e. CRU(D) = delete = remove data**
 
 The final operation from our **CRUD** acronym is **DELETE**. This is the operation we use when we want to remove data from the database. In Apache Cassandra you can **DELETE** from the cell level all the way up to the partition _(meaning I could remove a single column in a single row or I could remove a whole partition)_ using the same **DELETE** command.
 
@@ -437,19 +442,12 @@ SELECT * FROM comments_by_video;
 
 Notice the row is now removed from the comments_by_video table, it's as simple as that.
 
-### Homework note
 
-To submit the **homework**, please take a screenshot of the CQL Console showing the rows in table
-`comments_by_video` before _and_ after executing the DELETE statement.
 
-## 4. Wrapping up
-We've just scratched the surface of what you can do using DataStax Astra DB with Apache Cassandra. Go take a look at [DataStax for Developers](https://www.datastax.com/dev) to see what else is possible. There's plenty to dig into!
 
-# Done?
 
-Don't forget to submit your homework to get verified "upgrade complete" badge! 
 
-## Homework
+## 13. Homework
 
 To complete the workshop and get verified badge, follow these simple steps:
 
