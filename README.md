@@ -12,15 +12,25 @@ Welcome to the 'A java Developer Journey into Apache Cassandra™…' workshop! 
 
 ## 📋 Table of contents
 
-<img src="https://github.com/datastaxdevs/workshop-spring-reactive/blob/master/doc/img/ui-veterinarians.png?raw=true" align="right" width="400px"/>
+<img src="img/splash.png?raw=true" align="right" width="400px"/>
 
 1. [Objectives](#1-objectives)
 2. [Frequently asked questions](#2-frequently-asked-questions)
 3. [Materials for the Session](#3-materials-for-the-session)
 4. [Create your Database](#4-create-astra-db-instance)
 5. [Create a Table](#5-create-your-schema-with-cql-console)
-6. [CRUD Operations on your tables](#6-create-astra-token)
-7. [Homeworks](#12-homeworks)
+6. [CRUD Operations on your table](#6-create-astra-token)
+7. [Data Modelling](#6-create-astra-token)
+8. [Homeworks](#12-homeworks)
+
+## 1. Objectives
+
+* *Discover what is the Apache Cassandra NoSQL Database and what are the relevant **use cases***
+* *Understand how **Java Applications** connect to Apache Cassandra™*
+
+
+[🏠 Back to Table of Contents](#-table-of-content)
+
 
 
 ## 1. Create your Astra DB instance
