@@ -1,5 +1,8 @@
 <!--- STARTEXCLUDE --->
-## 🔥  JavaZone 2021: A java Developer Journey into Apache Cassandra™… 🔥
+## 🔥 A Java developer Journey into Apache Cassandra™… 🔥
+
+<img src="img/badge-javazone.png?raw=true" width="200" align="right" />
+
 
 [![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/datastaxdevs/workshop-streaming-game)
 [![License Apache2](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0)
@@ -18,83 +21,130 @@ Welcome to the 'A java Developer Journey into Apache Cassandra™…' workshop! 
 2. [Frequently asked questions](#2-frequently-asked-questions)
 3. [Materials for the Session](#3-materials-for-the-session)
 4. [Create your Database](#4-create-astra-db-instance)
-5. [Create a Table](#5-create-your-schema-with-cql-console)
-6. [CRUD Operations on your table](#6-create-astra-token)
-7. [Data Modelling](#6-create-astra-token)
-8. [Homeworks](#12-homeworks)
+5. [Create a Table](#)
+6. [Execute CRUD Operations](#)
+7. [Data Modelling](#)
+8. [Native Drivers](#)
+9. [Drivers Object Mapping](#)
+10. [Spring Data Cassandra](#)
+11. [Cassandra Quarkus extension](#)
+12. [Overview of Stargate APis](#)
+13. [Astra and Stargate SDK](#)
+14. [Homeworks](#)
 
 ## 1. Objectives
 
-* *Discover what is the Apache Cassandra NoSQL Database and what are the relevant **use cases***
-* *Understand how **Java Applications** connect to Apache Cassandra™*
-
+* Discover what the NoSQL Database Apache Cassandra is and what are the relevant **use cases**
+* Understand how Apache Cassandra is different from relational database in the phylosophy and **data modelling**.
+* Practive on how **Java Applications** connect to the databases, what are the rules things to know.
+* Get an overview of [Stargate](stargate.io), what it brings to the picture
+* Get you hands dirty to use it all and have samples codes to come back on.
 
 [🏠 Back to Table of Contents](#-table-of-content)
 
 
+## 2. Frequently asked questions
+<p/>
+<details>
+<summary><b> 1️⃣ Can I run this workshop on my computer?</b></summary>
+<hr>
+<p>There is nothing preventing you from running the workshop on your own machine, If you do so, you will need the following
+<ol>
+<li><b>git</b> installed on your local system
+<li><b>JDK 8+</b> installed on your local system
+<li><b>Maven 3.6+</b> installed on your local system
+</ol>
+</p>
+In this readme, we try to provide instructions for local development as well - but keep in mind that the main focus is development on Gitpod, hence <strong>We can't guarantee live support</strong> about local development in order to keep on track with the schedule. However, we will do our best to give you the info you need to succeed.
+</details>
+<p/>
+<details>
+<summary><b> 2️⃣ What other prerequisites are required?</b></summary>
+<hr>
+<ul>
+<li>You will need a GitHub account
+<li>You will also need an Astra account: don't worry, we'll work through that in the following
+</ul>
+</p>
+</details>
+<p/>
+<details>
+<summary><b> 3️⃣ Do I need to pay for anything for this workshop?</b></summary>
+<hr>
+<b>No.</b> All tools and services we provide here are FREE.
+</details>
+<p/>
+<details>
+<summary><b> 4️⃣ Will I get a certificate if I attend this workshop?</b></summary>
+<hr>
+Attending the session is not enough. You need to complete the homeworks detailed below and you will get a nice badge.
+</details>
+<p/>
 
-## 1. Create your Astra DB instance
+[🏠 Back to Table of Contents](#-table-of-content)
 
-_**`ASTRA DB`** is the simplest way to run Cassandra with zero operations at all - just push the button and get your cluster. No credit card required, $25.00 USD credit every month, roughly 5M writes, 30M reads, 40GB storage monthly - sufficient to run small production workloads._
+## 3. Materials for the Session
 
-✅ Register (if needed) and Sign In to Astra DB [https://astra.datastax.com](https://astra.dev/cassandra-day-anz): You can use your `Github`, `Google` accounts or register with an `email`.
+It doesn't matter if you join our workshop live or you prefer to work at your own pace,
+we have you covered. In this repository, you'll find everything you need for this workshop:
+
+- [Slide deck](slides/slides.pdf)
+- [Datastax Developers Discord chat](https://bit.ly/cassandra-workshop)
+- [Questions and Answers](https://community.datastax.com/)
+
+[🏠 Back to Table of Contents](#-table-of-content)
+
+## 4. Create Astra DB Instance
+
+**`ASTRA DB`** is the simplest way to run Cassandra with zero operations at all - just push the button and get your cluster. No credit card required, $25.00 USD credit every month, roughly 20M read/write operations, 80GB storage monthly - sufficient to run small production workloads.
+
+#### ✅ 4a. Register 
+
+If you do have an account yet register and sign In to Astra DB this is FREE and NO CREDIT CARD asked. [https://astra.datastax.com](https://astra.datastax.com): You can use your `Github`, `Google` accounts or register with an `email`.
 
 _Make sure to chose a password with minimum 8 characters, containing upper and lowercase letters, at least one number and special character_
 
-✅ Choose "Start Free Now"
+#### ✅ 4b. Create a "FREE" plan
 
-Choose the "Start Free Now" plan, then "Get Started" to work in the free tier.
+Follow this [guide](https://docs.datastax.com/en/astra/docs/creating-your-astra-database.html), to set up a pay as you go database with a free $25 monthly credit. You will find below recommended values to enter:
 
-You will have plenty of free initial credit (renewed each month!), roughly corresponding
-to 40 GB of storage, 30M reads and 5M writes.
+- **For the database name** - `workshops`
 
-> If this is not enough for you, congratulations! You are most likely running a mid- to large-sized business! In that case you should switch to a paid plan.
-
-(You can follow this [guide](https://docs.datastax.com/en/astra/docs/creating-your-astra-database.html) to set up your free-tier database with the $25 monthly credit.)
-
-![astra-db-signup](images/tutorials/astra_signup.gif)
-
-To create the database:
-
-- **For the database name** - `killrvideocluster`. While Astra DB allows you to fill in these fields with values of your own choosing, please follow our recommendations to ensure the application runs properly.
-
-- **For the keyspace name** - `killrvideo`. It's really important that you use the name "nosql1" for the code to work. In short:
-
-| Parameter | Value 
-|---|---|
-| Database name | killrvideocluster |
-| Keyspace name | killrvideo |
+- **For the keyspace name** - `javazone`
 
 _You can technically use whatever you want and update the code to reflect the keyspace. This is really to get you on a happy path for the first run._
 
-- **For provider and region**: Choose and provider (either GCP, AWS or Azure). Region is where your database will reside physically (choose one close to you or your users).
+- **For provider and region**: Choose a provider (GCP, Azure or AWS) and then the related region is where your database will reside physically (choose one close to you or your users).
 
 - **Create the database**. Review all the fields to make sure they are as shown, and click the `Create Database` button.
 
 You will see your new database `pending` in the Dashboard.
 
-![db-pending-state](https://github.com/datastaxdevs/shared-assets/blob/master/astra/dashboard-pending-1000-update.png?raw=true)
+![my-pic](img/db-pending.png?raw=true)
 
 The status will change to `Active` when the database is ready, this will only take 2-3 minutes. You will also receive an email when it is ready.
 
 **👁️ Walkthrough**
 
-![db-creation-walkthrough](images/tutorials/astra-create-db.gif?raw=true)
+*The Walkthrough mentions the wrong keyspace, make sure to use `javazone`*
 
-## 2. Create a table
-Ok, now that you have a database created the next step is to create a table to work with. 
+![image](img/astra-create-db.gif?raw=true)
 
-**✅ Step 2a. Navigate to the CQL Console and login to the database**
-
-In the Summary screen for your database, select **_CQL Console_** from the top menu in the main window. This will take you to the CQL Console and automatically log you in.
-
-<details>
-    <summary>Show me! </summary>
-    <img src="images/astra-cql-console.gif" />
-</details>
+[🏠 Back to Table of Contents](#-table-of-content)
 
 
-**✅ Step 2b. Describe keyspaces and USE killrvideo**
+## 5. Create a table
+
+#### ✅ 5a. Locate the CQL Console
+
+As seen in the slides on the contrary of relational you start with the request and data model BEFORE CODING.
+
+Let's start with the CQL console for the database as whown below.
+
+![image](img/db-cqlconsole-1.png?raw=true)
+
+
+#### ✅ Step 5b. Describe keyspaces
 
 Ok, now we're ready to rock. Creating tables is quite easy, but before we create one we need to tell the database which keyspace we are working with.
 
@@ -112,29 +162,36 @@ _"desc" is short for "describe", either is valid._
 
 <img width="1000" alt="Screenshot 2020-09-30 at 13 54 55" src="https://user-images.githubusercontent.com/20337262/94687725-8cbf8600-0324-11eb-83b0-fbd3d7fbdadc.png">
 
-Depending on your setup you might see a different set of keyspaces than in the image. The one we care about for now is **_killrvideo_**. From here, execute the **_USE_** command with the **_killrvideo_** keyspace to tell the database our context is within **_killrvideo_**.
+
+#### ✅ Step 5c. Use JavaZone
+
+```sql
+use javazone;
+```
+
+Depending on your setup you might see a different set of keyspaces than in the image. The one we care about for now is **_javazone_**. From here, execute the **_USE_** command with the **_javazone_** keyspace to tell the database our context is within **_javazone_**.
 
 > Take advantage of the TAB-completion in the CQL Console. Try typing `use kill` and then pressing TAB, for example.
 
 📘 **Command to execute**
-```
-use killrvideo;
+
+```sql
+use javazone;
 ```
 
 📗 **Expected output**
 
-<img width="1000" alt="Screenshot 2020-09-30 at 13 55 56" src="https://user-images.githubusercontent.com/20337262/94687832-b082cc00-0324-11eb-885a-d44e127cf9be.png">
+![image](img/db-cqlconsole-2.png?raw=true)
 
-Notice how the prompt displays ```<username>@cqlsh:killrvideo>``` informing us we are **using** the **_killrvideo_** keyspace. Now we are ready to create our table.
+Notice how the prompt displays ```<username>@cqlsh:javazone>``` informing us we are **using** the **_javazone_** keyspace. Now we are ready to create our table.
 
-**✅ Step 2c. Create the _users_by_city_ table**
+**✅ Step 5d. Create the _users_by_city_ table**
 
 At this point we can execute a command to create the **_users_by_city_** table using the information provided during the workshop presentation. Just copy/paste the following command into your CQL console at the prompt.
 
 📘 **Command to execute**
 
-```
-// Users keyed by city
+```sql
 CREATE TABLE IF NOT EXISTS users_by_city ( 
 	city text, 
 	last_name text, 
@@ -160,10 +217,10 @@ Aaaand **BOOM**, you created a table in your database. That's it. Now, we'll mov
 
 [🏠 Back to Table of Contents](#table-of-contents)
 
-## 3. Execute CRUD operations
+## 6. Execute CRUD operations
 CRUD operations stand for create, read, update, and delete. Simply put, they are the basic types of commands you need to work with ANY database in order to maintain data for your applications.
 
-**✅ Step 3a. Create a couple more tables**
+#### ✅ Step 6a. Create a couple more tables
 
 We started by creating the **_users_by_city_** table earlier, but now we need to create some tables to support **user** and **video** comments per the **_"Art of Data Modeling"_** section of the presentation. Let's go ahead and do that now. Execute the following statements to create our tables.
 
