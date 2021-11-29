@@ -23,14 +23,16 @@ Welcome to the 'A java Developer Journey into Apache Cassandra™…' workshop! 
 4. [Create your Database](#4-create-astra-db-instance)
 5. [Create a Table](#5-create-a-table)
 6. [Execute CRUD Operations](#6-execute-crud-operations)
-7. [Data Modelling](#)
-8. [Native Drivers](#)
-9. [Drivers Object Mapping](#)
-10. [Spring Data Cassandra](#)
-11. [Cassandra Quarkus extension](#)
-12. [Overview of Stargate APis](#)
-13. [Astra and Stargate SDK](#)
-14. [Homeworks](#)
+7. [Sensor Data Modeling](#)
+8. [Order Management Data Modeling](#)
+
+9. [Native Drivers](#)
+10. [Drivers Object Mapping](#)
+11. [Spring Data Cassandra](#)
+12. [Cassandra Quarkus extension](#)
+13. [Overview of Stargate APis](#)
+14. [Astra and Stargate SDK](#)
+15. [Homeworks](#)
 
 ## 1. Objectives
 
@@ -442,12 +444,50 @@ SELECT * FROM comments_by_video;
 
 Notice the row is now removed from the comments_by_video table, it's as simple as that.
 
+## 7. Sensor Data Modeling
+
+> *All Data modelling samples can be found in the [Katacoda LIbrary](https://www.katacoda.com/datastax/courses/cassandra-data-modeling)*
+
+- [Data Modelling methodology](https://www.datastax.com/learn/data-modeling-by-example/sensor-data-model)
+
+![image](https://www.datastax.com/sites/default/files/inline-images/%28web%29%20conceptual%20%281%29.png)
+
+- [Katacoda Scenario](https://www.katacoda.com/datastax/courses/cassandra-data-modeling/sensor-data)
 
 
+## 8.  Order Management System Data Modelling
 
+- [Data Modelling methodology](https://www.datastax.com/learn/data-modeling-by-example/order-management)
 
+![image](https://www.datastax.com/sites/default/files/inline-images/%28web%29%20physical_1.png)
 
-## 13. Homework
+- [Katacoda Scenario](https://www.katacoda.com/datastax/courses/cassandra-data-modeling/order-management-data)
+
+## 9. Native Drivers
+
+abc
+
+## 10. Drivers Object Mapping
+
+def
+
+## 11. Spring Data Cassandra
+
+gfh
+
+## 12. Cassandra Quarkus extension
+
+ijk
+
+## 13. Overview of Stargate APis
+
+lmn
+
+## 14. Astra and Stargate SDK
+
+pqr
+
+## 15. Homework
 
 To complete the workshop and get verified badge, follow these simple steps:
 
