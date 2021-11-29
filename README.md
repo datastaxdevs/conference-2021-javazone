@@ -25,14 +25,14 @@ Welcome to the 'A java Developer Journey into Apache Cassandra™…' workshop! 
 6. [Execute CRUD Operations](#6-execute-crud-operations)
 7. [Sensor Data Modeling](#)
 8. [Order Management Data Modeling](#)
+9. [Create Astra Token](#)
+10. [Native Drivers](#)
+11. [Drivers Object Mapping](#)
+12. [Spring Data Cassandra](#)
+13. [Cassandra Quarkus extension](#)
+14. [Overview of Stargate APis](#)
+15. [Astra and Stargate SDK](#)
 
-9. [Native Drivers](#)
-10. [Drivers Object Mapping](#)
-11. [Spring Data Cassandra](#)
-12. [Cassandra Quarkus extension](#)
-13. [Overview of Stargate APis](#)
-14. [Astra and Stargate SDK](#)
-15. [Homeworks](#)
 
 ## 1. Objectives
 
@@ -444,6 +444,8 @@ SELECT * FROM comments_by_video;
 
 Notice the row is now removed from the comments_by_video table, it's as simple as that.
 
+[🏠 Back to Table of Contents](#-table-of-content)
+
 ## 7. Sensor Data Modeling
 
 > *All Data modelling samples can be found in the [Katacoda LIbrary](https://www.katacoda.com/datastax/courses/cassandra-data-modeling)*
@@ -454,6 +456,7 @@ Notice the row is now removed from the comments_by_video table, it's as simple a
 
 - [Katacoda Scenario](https://www.katacoda.com/datastax/courses/cassandra-data-modeling/sensor-data)
 
+[🏠 Back to Table of Contents](#-table-of-content)
 
 ## 8.  Order Management System Data Modelling
 
@@ -463,41 +466,80 @@ Notice the row is now removed from the comments_by_video table, it's as simple a
 
 - [Katacoda Scenario](https://www.katacoda.com/datastax/courses/cassandra-data-modeling/order-management-data)
 
-## 9. Native Drivers
+[🏠 Back to Table of Contents](#-table-of-content)
+
+## 9. Create Astra Token
+
+To connect to the database from Java code we need some credentials, this is what we are going to do here.
+
+#### ✅ 6a. Generate Token
+
+Following the [Manage Application Tokens docs](https://docs.datastax.com/en/astra/docs/manage-application-tokens.html) create a token with `Database Admnistrator` roles.
+
+- Go the `Organization Settings`
+
+- Go to `Token Management`
+
+- Pick the role `Database Admnistrator` on the select box
+
+- Click Generate token
+
+**👁️ Walkthrough**
+
+![image](img/astra-create-token.gif?raw=true)
+
+This is what the token page looks like. You can now download the values as a CSV. We will need those values but you can also keep this window open for use later.
+
+![image](img/astra-token.png?raw=true)
+
+Notice the clipboard icon at the end of each value.
+
+- `clientId:` We will use it as a _username_ to contact to the Cassandra database
+
+- `clientSecret:` We will use it as a _password_ to contact to the Cassandra database
+
+- `appToken:` We will use it as a api token Key to interact with APIs.
+
+#### ✅ 6b. Copy your token in your clipboard
+
+To know more about roles of each token you can have a look to [this video.](https://www.youtube.com/watch?v=TUTCLsBuUd4&list=PL2g2h-wyI4SpWK1G3UaxXhzZc6aUFXbvL&index=8)
+
+**Note: Make sure you don't close the window accidentally or otherwise - if you close this window before you copy the values, the application token is lost forever. They won't be available later for security reasons.**
+
+We are now set with the database and credentials. Let's start coding with Spring !
+
+[🏠 Back to Table of Contents](#-table-of-content)
+
+## 10. Native Drivers
 
 abc
 
-## 10. Drivers Object Mapping
+## 11. Drivers Object Mapping
 
 def
 
-## 11. Spring Data Cassandra
+[🏠 Back to Table of Contents](#-table-of-content)
+
+## 12. Spring Data Cassandra
 
 gfh
 
-## 12. Cassandra Quarkus extension
+[🏠 Back to Table of Contents](#-table-of-content)
+
+## 13. Cassandra Quarkus extension
 
 ijk
 
-## 13. Overview of Stargate APis
+[🏠 Back to Table of Contents](#-table-of-content)
+
+## 14. Overview of Stargate APis
 
 lmn
 
-## 14. Astra and Stargate SDK
+[🏠 Back to Table of Contents](#-table-of-content)
+
+## 15. Astra and Stargate SDK
 
 pqr
 
-## 15. Homework
-
-To complete the workshop and get verified badge, follow these simple steps:
-
-1. Watch the workshop live or recorded.
-2. Complete the workshop practice as described below and make the screenshot of the last step (result of the `DELETE` in "Execute CRUD", see [here](#homework-note)).
-3. Complete the following short courses: [Cassandra Data Modeling](https://www.datastax.com/node/3272) and [Cassandra Query Language](https://www.datastax.com/dev/scenario/try-it-out-cassandra-query-language-cql). Take screenshots of the "Congratulations" page from each course.
-4. [Submit the Homework](https://github.com/datastaxdevs/workshop-intro-to-cassandra/issues/new?assignees=HadesArchitect&labels=homework%2C+wait+for+review&template=homework.md&title=%5BHW%5D+%3CNAME%3E) attaching the screenshots.
-
-
-
-- [Workshop video](https://www.youtube.com/watch?v=VaLwHqAHNtE)
-- [Discord chat](https://bit.ly/cassandra-workshop)
-- [Questions and Answers](https://community.datastax.com/)
+[🏠 Back to Table of Contents](#-table-of-content)
