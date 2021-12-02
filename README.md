@@ -514,7 +514,7 @@ We are now set with the database and credentials. Let's start coding with Spring
 
 Let start browsing some JAVA code `\_0_/`. 
 
->> ⚠️We expect you to be an experienced JAVA DEVELOPER.
+> ⚠️We expect you to be an experienced JAVA DEVELOPER.
 
 ### ✅ 10a. Prerequisite
 
@@ -554,7 +554,7 @@ javazone-3-quarkus
 javazone-4-sdk
 ```
 
-> ℹ️ *Full disclosure*: It is NOT a multi module maven (sorry), those are a grouping of multiple projects we have been building. Idea is to give you a lot of code to copy and get inspired. Some samples are standalone classes, others are unit tests.
+> ℹ️    *Full disclosure*: It is NOT a multi module maven (sorry), those are a grouping of multiple projects we have been building. Idea is to give you a lot of code to copy and get inspired. Some samples are standalone classes, others are unit tests.
 
 #### ✅ 10c. Keyspace Manipulations
 
@@ -700,6 +700,8 @@ datastax-java-driver {
 mvn exec:java -Dexec.mainClass=com.datastax.samples.E09_ConnectToAstraConfFile
 ```
 
+#### ✅ 10e. Use all Drivers Features
+
 For the following samples the connection remains the same using your configuration file.
 
 - *Execute `E10_GettingStarted` to work with table USERS*
@@ -732,15 +734,120 @@ mvn exec:java -Dexec.mainClass=com.datastax.samples.E13_Batches
 mvn exec:java -Dexec.mainClass=com.datastax.samples.E14_ListSetMapAndUdt
 ```
 
+- *Execute `E15_Json` to work with nested Structures*
+```bash
+mvn exec:java -Dexec.mainClass=com.datastax.samples.E15_Json
+```
 
+- *Execute `E16_Async`*
+```bash
+mvn exec:java -Dexec.mainClass=com.datastax.samples.E16_Async
+```
 
+- *Execute `E17_Reactive`*
+```bash
+mvn exec:java -Dexec.mainClass=com.datastax.samples.E17_Reactive
+```
 
+- *Execute `E18_Counters`*
+```bash
+mvn exec:java -Dexec.mainClass=com.datastax.samples.E18_Counters
+```
 
-#### ✅ 10e. Use the divers
+- *Execute `E19_LightweightTransactions`*
+```bash
+mvn exec:java -Dexec.mainClass=com.datastax.samples.E19_LightweightTransactions
+```
+
+- *Execute `E20_BlobAndCodec`*
+```bash
+mvn exec:java -Dexec.mainClass=com.datastax.samples.E20_BlobAndCodec
+```
 
 ## 11. Drivers Object Mapping
 
-def
+The mapping from Object to Tables is avaible in the native drivers Ad Hoc, no need for an external framework. Get more information in the [reference documentation](https://docs.datastax.com/en/developer/java-driver/4.13/manual/mapper/)
+
+- *We imported the following library*
+```xml
+<dependency>
+  <groupId>com.datastax.oss</groupId>
+  <artifactId>java-driver-mapper-runtime</artifactId>
+  <version>${cassandra.driver.oss.version}</version>
+</dependency>
+```
+
+- *And enable the annotation processor*. Sometimes you need to explicitely invoke a `mvn package` to generate the expected classes.
+```xml
+<plugins>
+ <plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-compiler-plugin</artifactId>
+  <configuration>
+   <release>11</release>
+   <source>11</source>
+   <target>11</target>
+   <annotationProcessorPaths>
+    <path>
+     <groupId>com.datastax.oss</groupId>
+     <artifactId>java-driver-mapper-processor</artifactId> 
+    </path>
+   </annotationProcessorPaths>
+  </configuration>
+ </plugin>
+</plugins>
+```
+
+- *Create a Bean mapped from the table*
+
+```java
+@Entity
+@CqlName("myTable")
+public class CommentByUser {
+    @PartitionKey
+    UUID userid;
+
+    @ClusteringColumn
+    UUID commentid;
+    
+    UUID videoid;
+
+    String comment;
+}
+```
+
+
+- *Create the DAO*
+
+```java
+@Dao
+public interface CommentDao extends CassandraSchemaConstants {
+    
+    @Query("SELECT * FROM ${keyspaceId}.${tableId} "
+         + "WHERE " + COMMENT_BY_USER_USERID + " = :userid ")
+    PagingIterable<CommentByUser> retrieveUserComments(UUID userid);
+```    
+
+- *Create the Mapper*
+
+```java
+@Mapper
+public interface CommentDaoMapper {
+ @DaoFactory
+ CommentDao commentDao();
+
+ static MapperBuilder<CommentDaoMapper> builder(CqlSession session) {
+   return new CommentDaoMapperBuilder(session);
+ }
+}
+```
+
+- *Run the TEST*
+
+```bash
+mvn exec:java -Dexec.mainClass=com.datastax.samples.E21_ObjectMapping
+```
+
 
 [🏠 Back to Table of Contents](#-table-of-content)
 
