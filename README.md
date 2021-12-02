@@ -110,7 +110,7 @@ _Make sure to chose a password with minimum 8 characters, containing upper and l
 
 Follow this [guide](https://docs.datastax.com/en/astra/docs/creating-your-astra-database.html), to set up a pay as you go database with a free $25 monthly credit. You will find below recommended values to enter:
 
-- **For the database name** - `workshops`
+- **For the database name** - `javazone`
 
 - **For the keyspace name** - `javazone`
 
@@ -512,7 +512,192 @@ We are now set with the database and credentials. Let's start coding with Spring
 
 ## 10. Native Drivers
 
-abc
+Let start browsing some JAVA code `\_0_/`. 
+
+>> ⚠️We expect you to be an experienced JAVA DEVELOPER.
+
+### ✅ 10a. Prerequisite
+
+#### 📦 Docker
+- Use the [reference documentation](https://www.docker.com/products/docker-desktop) to install **Docker Desktop**
+- Validate your installation with
+
+```bash
+docker -v
+docker run hello-world
+```
+
+#### 📦 Java Development Kit (JDK) 8+
+- Use the [reference documentation](https://docs.oracle.com/javase/8/docs/technotes/guides/install/install_overview.html) to install a **Java Development Kit**
+- Validate your installation with
+
+```bash
+java --version
+```
+
+#### 📦 Apache Maven
+- Use the [reference documentation](https://maven.apache.org/install.html) to install **Apache Maven**
+- Validate your installation with
+
+```bash
+mvn -version
+```
+
+#### ✅ 10b. Setup your environment
+
+Locate the folder `hands-on` on the repo and import the 4 projects in your favourite IDE and let it download half of internet....
+
+```
+javazone-1-cassandra-drivers
+javazone-2-spring-data
+javazone-3-quarkus
+javazone-4-sdk
+```
+
+> ℹ️ *Full disclosure*: It is NOT a multi module maven (sorry), those are a grouping of multiple projects we have been building. Idea is to give you a lot of code to copy and get inspired. Some samples are standalone classes, others are unit tests.
+
+#### ✅ 10c. Keyspace Manipulations
+
+Astra is a great DBAAS for Cassandra yet, because it creates you everything you need you cannot really show options. As a consequence we will be using a local Cassandra in Docker.
+
+```yaml
+  cassandra-seed:
+    image: cassandra:4.0.1
+    ports:
+      - 7000:7000
+      - 7001:7001
+      - 7199:7199
+      - 9042:9042
+      - 9160:9160
+    mem_limit: 2G
+    environment:
+      - HEAP_NEWSIZE=128M
+      - MAX_HEAP_SIZE=1024M
+      - CASSANDRA_SEEDS=cassandra-seed
+      - CASSANDRA_CLUSTER_NAME=javazone
+      - CASSANDRA_DC=dc1
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+```
+
+- *Start the Container*
+```bash
+docker-compose up -d
+```
+
+Wait 30s for the node to bootstrap
+
+- *Open CQLSH in interactive mode*
+```
+docker exec -it `docker ps | grep cassandra:4.0.1 | cut -b 1-12` cqlsh 
+```
+
+```bash
+Connected to javazone at 127.0.0.1:9042
+[cqlsh 6.0.0 | Cassandra 4.0.1 | CQL spec 3.4.5 | Native protocol v5]
+Use HELP for help.
+cqlsh> 
+```
+
+- *Show MetaData* : 
+```
+cd 1-cassandra-drivers
+mvn exec:java -Dexec.mainClass=com.datastax.samples.E01_ClusterShowMetaData
+```
+
+- *Create the Keyspace* : 
+```
+mvn exec:java -Dexec.mainClass=com.datastax.samples.E02_CreateKeyspace
+```
+
+```
+[INFO] --- exec-maven-plugin:3.0.0:java (default-cli) @ javazone-1-cassandra-drivers ---
+12:23:14.499 INFO  com.datastax.samples.E02_CreateKeyspace       : Creating Keyspace 'killrvideo'
+12:23:15.607 INFO  com.datastax.samples.CassandraSchemaUtils     : + Keyspace 'killrvideo' created (if needed).
+```
+
+- * You have now a new keyspace 'killrvideo'
+
+```sql
+describe keyspaces;
+```
+or
+
+```bash
+docker exec -it `docker ps | grep cassandra:4.0.1 | cut -b 1-12` cqlsh -e "describe keyspaces"
+```
+
+- *Create the Schema* : 
+```
+mvn exec:java -Dexec.mainClass=com.datastax.samples.E03_CreateSchema
+```
+
+```
+12:19:56.877 INFO  com.datastax.samples.E03_CreateSchema         : Starting 'CreateSchema' sample...
+12:19:59.291 INFO  com.datastax.samples.CassandraSchemaUtils     : + Type 'video_format' has been created (if needed).
+12:20:00.430 INFO  com.datastax.samples.CassandraSchemaUtils     : + Table 'users' has been created (if needed).
+12:20:01.535 INFO  com.datastax.samples.CassandraSchemaUtils     : + Table 'videos' has been created (if needed).
+12:20:02.670 INFO  com.datastax.samples.CassandraSchemaUtils     : + Table 'videos_views' has been created (if needed).
+12:20:03.787 INFO  com.datastax.samples.CassandraSchemaUtils     : + Table 'comments_by_video' has been created (if needed).
+12:20:04.886 INFO  com.datastax.samples.CassandraSchemaUtils     : + Table 'comments_by_user' has been created (if needed).
+12:20:06.951 INFO  com.datastax.samples.E03_CreateSchema         : [OK] Success
+```
+
+- *You have now 4 tables*
+```sql
+use killrvideo;
+describe tables;
+```
+
+```
+comments_by_user  comments_by_video  users  videos  videos_views
+```
+
+- *Connect with configuration File*
+```
+mvn exec:java -Dexec.mainClass=com.datastax.samples.E04_ConfigurationFile
+```
+
+- *Connect with Explicit Configuration*
+```
+mvn exec:java -Dexec.mainClass=com.datastax.samples.E05_ProgrammaticConfiguration
+```
+
+- *Drop Schema*
+```
+mvn exec:java -Dexec.mainClass=com.datastax.samples.E06_DropSchema
+```
+
+- *Drop Keyspace*
+```
+mvn exec:java -Dexec.mainClass=com.datastax.samples.E07_DropKeyspace
+```
+
+#### ✅ 10d. Connect to Astra
+
+- *Download the secure-connect-bundle.zip*
+![my-pic](img/scb.png?raw=true)
+
+- *Edit the Configuration file `custom_astra.conf`
+
+```typsafe
+datastax-java-driver {
+  basic {
+    session-keyspace = javazone
+    cloud {
+      secure-connect-bundle = /tmp/scb.zip.zip
+    }
+  }
+  advanced {
+    auth-provider {
+      class = PlainTextAuthProvider
+      username = clientId 
+      password = clientSecret
+    }
+  }
+}
+```
+
+
 
 ## 11. Drivers Object Mapping
 
