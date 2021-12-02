@@ -6,16 +6,21 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.datastax.oss.driver.api.core.cql.BoundStatement;
-import com.datastax.oss.driver.api.core.cql.PreparedStatement;
 import com.datastax.oss.driver.api.core.cql.ResultSet;
 import com.datastax.oss.driver.api.core.cql.Row;
 import com.datastax.oss.quarkus.runtime.api.session.QuarkusCqlSession;
 import com.datastaxdev.todo.api.Todo;
+
 import io.quarkus.runtime.StartupEvent;
 import io.smallrye.common.annotation.Blocking;
 
@@ -25,7 +30,7 @@ public class AstraTODO {
     @Inject
     QuarkusCqlSession cqlSession;
 
-    private String keyspaceName = "todolist";
+    private String keyspaceName = "quarkus";
     private String tableName = "todolist";
 
     public boolean onStart(@Observes StartupEvent ev){
