@@ -853,7 +853,7 @@ mvn exec:java -Dexec.mainClass=com.datastax.samples.E21_ObjectMapping
 
 ## 12. Spring Data Cassandra
 
-To isolate the Spring Data work from what we did previous let's create a new keypace.
+To isolate the `Spring Data` work from what we did previous let's create a new keypace.
 
 ### ✅ 12a. Create a keyspace
 
@@ -885,34 +885,236 @@ spring.data.cassandra.username=<client_id>
 spring.data.cassandra.password=<client_secret>
 
 datastax.astra.secure-connect-bundle=/tmp/secure-connect-javazone.zip
-# --
+```
 
 ### ✅ 12c. Validate configuration and create schema
 
 - *Check Connectivity*
 ```bash
 cd ../2-spring-data
-mvn exec:java -Dexec.mainClass=com.datastax.workshop.E22_SpringDataAstraConnectivity
+mvn test -Dtest=com.datastax.workshop.E22_SpringDataAstraConnectivity
 ```
 
 - *Create Schema if needed*
 ```bash
-cd ../2-spring-data
-mvn exec:java -Dexec.mainClass=com.datastax.workshop.E23_CreateSchemaInAstraTest
+mvn test -Dtest=com.datastax.workshop.E23_CreateSchemaInAstraTest
 ```
 
-### ✅ 12d. Brose the code
+### ✅ 12d. Browse the code
+
+- *Project configuration, notice we are using a dedicated Spring Boot Starter*
+
+```xml
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-data-cassandra</artifactId>
+</dependency>
+```
+
+- *Create a Projo*
+```java
+@Table(value = TodoEntity.TABLENAME)
+public class TodoEntity {
+
+ public static final String TABLENAME        = "todos";
+ public static final String COLUMN_UID       = "uid";
+ public static final String COLUMN_TITLE     = "title";
+ public static final String COLUMN_COMPLETED = "completed";
+ public static final String COLUMN_ORDER     = "offset";
+    
+ @PrimaryKey
+ @Column(COLUMN_UID)
+ @CassandraType(type = Name.UUID)
+ private UUID uid;
+    
+ @Column(COLUMN_TITLE)
+ @CassandraType(type = Name.TEXT)
+ private String title;
+    
+ @Column(COLUMN_COMPLETED)
+ @CassandraType(type = Name.BOOLEAN)
+ private boolean completed = false;
+    
+ @Column(COLUMN_ORDER)
+ @CassandraType(type = Name.INT)
+ private int order = 0;
+    
+ public TodoEntity(String title, int offset) {
+   this(UUID.randomUUID(), title, false, offset);
+ }
+}
+```
+
+- *Create the Repository (An interface !) extending `CassandraRepository`*
+
+```java
+@Repository
+public interface TodoRepositoryCassandra extends CassandraRepository<TodoEntity, UUID> {
+}
+```
+
+- *Create a Better Repository now extending  `SimpleCassandraRepository` to have access to CqlSession.*
+
+```java
+@Repository
+public class TodoRepositorySimpleCassandra extends SimpleCassandraRepository<TodoEntity, UUID> {
+
+ protected final CqlSession cqlSession;
+    
+ protected final CassandraOperations cassandraTemplate;
+    
+ @SuppressWarnings("unchecked")
+ public TodoRepositorySimpleCassandra(CqlSession cqlSession, CassandraOperations ops) {
+   super(new MappingCassandraEntityInformation<TodoEntity, UUID>(
+     (CassandraPersistentEntity<TodoEntity>) ops.getConverter().getMappingContext()
+     .getRequiredPersistentEntity(TodoEntity.class), ops.getConverter()), ops);
+   this.cqlSession = cqlSession;
+   this.cassandraTemplate = ops;
+ }  
+    
+}
+```
+
 
 ### ✅ 12e. Start the application
 
+Start
+```
+mvn spring-boot:run
+```
 
+You can access Hello world 
+```
+http://localhost:8080/
+```
+
+You can interact with the API
+```
+```
+
+You can work with an external user interface
+```
+```
 
 
 [🏠 Back to Table of Contents](#-table-of-content)
 
 ## 13. Cassandra Quarkus extension
 
-ijk
+To isolate the `Quarkus` work from what we did previous let's create a new keypace.
+
+### ✅ 13a. Create a keyspace
+
+- *Locate the `new keyspace` button on the DB home page*
+
+![image](img/new_keyspace.png?raw=true)
+
+- *Create the `spring_data` keyspace the DB will shoft in maintenance for a few seconds.
+
+![image](img/new_keyspace3.png?raw=true)
+
+### ✅ 13b. Setup the application
+
+- Import the project `3-quarkus` in your IDE. 
+
+- Locate the configuration file `application.properties` in the folder `src/main/resources` (sounds familiar ?)
+
+- Edit the Quarkusconfiguration file updating `username`, `password` and `secure-connect-bundle` properties as shown below
+
+```ini
+quarkus.cassandra.keyspace=quarkus
+quarkus.cassandra.cloud.secure-connect-bundle=/tmp/secure-connect-javazone.zip
+quarkus.cassandra.auth.username=<client_id>
+quarkus.cassandra.auth.password=<client_secret>
+```
+
+### ✅ 13c. Validate configuration
+
+- *Check Connectivity*
+```bash
+cd ../3-quarkus
+mvn test -Dtest=com.datastaxdev.E24_QuarkusAstraConnectivity
+```
+
+### ✅ 13d. Browse the code
+
+- *Project configuration, notice we are not using the same set of drivers*
+
+```xml
+<dependency>
+  <groupId>com.datastax.oss.quarkus</groupId>
+  <artifactId>cassandra-quarkus-client</artifactId>
+  <version>1.1.1</version>
+</dependency>
+```
+
+- *Define a Pojo* 
+
+```java
+@RegisterForReflection
+public class Todo {
+   private String id;
+   private String title;
+   private boolean completed;
+   // Getter and setters
+}
+```
+    			
+
+### ✅ 13e. Start the Application
+
+- *Start the application*
+```
+mvn quarkus:dev -DskipTests
+```
+
+The application starts
+```
+2021-12-02 17:53:52,114 WARN  [com.dat.oss.qua.dep.int.CassandraClientProcessor] (build-16) Micrometer metrics were enabled by configuration, but MicrometerMetricsFactory was not found.
+2021-12-02 17:53:52,116 WARN  [com.dat.oss.qua.dep.int.CassandraClientProcessor] (build-16) Make sure to include a dependency to the java-driver-metrics-micrometer module.
+__  ____  __  _____   ___  __ ____  ______ 
+ --/ __ \/ / / / _ | / _ \/ //_/ / / / __/ 
+ -/ /_/ / /_/ / __ |/ , _/ ,< / /_/ /\ \   
+--\___\_\____/_/ |_/_/|_/_/|_|\____/___/   
+2021-12-02 17:53:52,758 INFO  [com.dat.oss.dri.int.cor.DefaultMavenCoordinates] (Quarkus Main Thread) DataStax Java driver for Apache Cassandra(R) (com.datastax.oss:java-driver-core) version 4.13.0
+2021-12-02 17:53:53,067 INFO  [com.dat.oss.qua.run.int.qua.CassandraClientStarter] (Quarkus Main Thread) Eagerly initializing Quarkus Cassandra client.
+2021-12-02 17:53:53,919 INFO  [com.dat.oss.dri.int.cor.tim.Clock] (vert.x-eventloop-thread-0) Using native clock for microsecond precision
+2021-12-02 17:53:55,381 INFO  [com.dat.oss.dri.int.cor.ses.DefaultSession] (vert.x-eventloop-thread-8) [s0] Negotiated protocol version V4 for the initial contact point, but cluster seems to support V5, keeping the negotiated version
+**** Table created true****
+2021-12-02 17:53:56,344 INFO  [io.quarkus] (Quarkus Main Thread) javazone-3-quarkus 0.0.1-SNAPSHOT on JVM (powered by Quarkus 2.3.1.Final) started in 5.326s. Listening on: http://localhost:8080
+2021-12-02 17:53:56,346 INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+2021-12-02 17:53:56,346 INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [cassandra-client, cdi, kubernetes, micrometer, resteasy-reactive, resteasy-reactive-jackson, smallrye-context-propagation, smallrye-health, smallrye-openapi, swagger-ui, vertx]
+
+Tests paused
+Press [r] to resume testing, [o] Toggle test output, [h] for more options
+```
+
+- *Press `h` to show more options
+```bash
+== Continuous Testing
+
+[r] - Resume testing
+[o] - Toggle test output (disabled)
+
+== HTTP
+
+[w] - Open the application in a browser
+[d] - Open the Dev UI in a browser
+
+== System
+
+[s] - Force restart
+[i] - Toggle instrumentation based reload (disabled)
+[l] - Toggle live reload (enabled)
+[j] - Toggle log levels (INFO)
+[h] - Shows this help
+[q] - Quits the application
+```
+
+- *Press `w` to see the [web UI](http://localhost:8080/)
+
+![image](img/quarkus_ui.png?raw=true)
+
 
 [🏠 Back to Table of Contents](#-table-of-content)
 
