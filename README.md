@@ -587,32 +587,19 @@ docker-compose up -d
 Wait 30s for the node to bootstrap
 
 - *Open CQLSH in interactive mode*
-```
+```bash
 docker exec -it `docker ps | grep cassandra:4.0.1 | cut -b 1-12` cqlsh 
 ```
 
-```bash
-Connected to javazone at 127.0.0.1:9042
-[cqlsh 6.0.0 | Cassandra 4.0.1 | CQL spec 3.4.5 | Native protocol v5]
-Use HELP for help.
-cqlsh> 
-```
-
 - *Show MetaData* : 
-```
+```bash
 cd 1-cassandra-drivers
 mvn exec:java -Dexec.mainClass=com.datastax.samples.E01_ClusterShowMetaData
 ```
 
 - *Create the Keyspace* : 
-```
+```bash
 mvn exec:java -Dexec.mainClass=com.datastax.samples.E02_CreateKeyspace
-```
-
-```
-[INFO] --- exec-maven-plugin:3.0.0:java (default-cli) @ javazone-1-cassandra-drivers ---
-12:23:14.499 INFO  com.datastax.samples.E02_CreateKeyspace       : Creating Keyspace 'killrvideo'
-12:23:15.607 INFO  com.datastax.samples.CassandraSchemaUtils     : + Keyspace 'killrvideo' created (if needed).
 ```
 
 - * You have now a new keyspace 'killrvideo'
@@ -627,19 +614,8 @@ docker exec -it `docker ps | grep cassandra:4.0.1 | cut -b 1-12` cqlsh -e "descr
 ```
 
 - *Create the Schema* : 
-```
+```bash
 mvn exec:java -Dexec.mainClass=com.datastax.samples.E03_CreateSchema
-```
-
-```
-12:19:56.877 INFO  com.datastax.samples.E03_CreateSchema         : Starting 'CreateSchema' sample...
-12:19:59.291 INFO  com.datastax.samples.CassandraSchemaUtils     : + Type 'video_format' has been created (if needed).
-12:20:00.430 INFO  com.datastax.samples.CassandraSchemaUtils     : + Table 'users' has been created (if needed).
-12:20:01.535 INFO  com.datastax.samples.CassandraSchemaUtils     : + Table 'videos' has been created (if needed).
-12:20:02.670 INFO  com.datastax.samples.CassandraSchemaUtils     : + Table 'videos_views' has been created (if needed).
-12:20:03.787 INFO  com.datastax.samples.CassandraSchemaUtils     : + Table 'comments_by_video' has been created (if needed).
-12:20:04.886 INFO  com.datastax.samples.CassandraSchemaUtils     : + Table 'comments_by_user' has been created (if needed).
-12:20:06.951 INFO  com.datastax.samples.E03_CreateSchema         : [OK] Success
 ```
 
 - *You have now 4 tables*
@@ -648,56 +624,84 @@ use killrvideo;
 describe tables;
 ```
 
-```
-comments_by_user  comments_by_video  users  videos  videos_views
-```
-
 - *Connect with configuration File*
-```
+```bash
 mvn exec:java -Dexec.mainClass=com.datastax.samples.E04_ConfigurationFile
 ```
 
 - *Connect with Explicit Configuration*
-```
+```bash
 mvn exec:java -Dexec.mainClass=com.datastax.samples.E05_ProgrammaticConfiguration
 ```
 
 - *Drop Schema*
-```
+```bash
 mvn exec:java -Dexec.mainClass=com.datastax.samples.E06_DropSchema
 ```
 
 - *Drop Keyspace*
 ```
 mvn exec:java -Dexec.mainClass=com.datastax.samples.E07_DropKeyspace
-```
+```bash
 
 #### ✅ 10d. Connect to Astra
 
 - *Download the secure-connect-bundle.zip*
 ![my-pic](img/scb.png?raw=true)
 
-- *Edit the Configuration file `custom_astra.conf`
+- *Edit `E08_ConnectToAstraProgrammatic` to override the settings*
+```java
+final String ASTRA_ZIP_FILE     = "/tmp/secure-connect-javazone.zip";
+final String ASTRA_KEYSPACE     = "javazone";
+final String ASTRA_CLIENTID     = "<change_me>";
+final String ASTRA_CLIENTSECRET = "<change_me>";
+```
 
-```typsafe
+- *Execute `E08_ConnectToAstraProgrammatic` to override the settings*
+```bash
+mvn exec:java -Dexec.mainClass=com.datastax.samples.E08_ConnectToAstraProgrammatic
+```
+
+- *Report same edits in the Configuration file `custom_astra.conf`
+
+```typesafe
 datastax-java-driver {
+
   basic {
     session-keyspace = javazone
+    request {
+       timeout     = 8 seconds
+       consistency = LOCAL_QUORUM
+       page-size = 5000
+    }
     cloud {
-      secure-connect-bundle = /tmp/scb.zip.zip
+      secure-connect-bundle = /tmp/secure-connect-javazone.zip
     }
   }
+  
   advanced {
+    connection {
+      init-query-timeout = 10 seconds
+      set-keyspace-timeout = 10 seconds
+    }
+    control-connection.timeout = 10 seconds
     auth-provider {
       class = PlainTextAuthProvider
-      username = clientId 
-      password = clientSecret
+      username = "<change_me>" 
+      password = "<change_me>"
     }
   }
 }
 ```
 
+- *Execute `E09_ConnectToAstraConfFile` to validate your settings*
+```bash
+mvn exec:java -Dexec.mainClass=com.datastax.samples.E09_ConnectToAstraConfFile
+```
 
+For the following samples the connection remains the same using your configuration file.
+
+#### ✅ 10e. Use the divers
 
 ## 11. Drivers Object Mapping
 
