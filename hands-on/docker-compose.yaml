@@ -1,0 +1,41 @@
+version: '2'
+services:
+
+  cassandra-seed:
+    image: cassandra:4.0.1
+    ports:
+      - 7000:7000
+      - 7001:7001
+      - 7199:7199
+      - 9042:9042
+      - 9160:9160
+    mem_limit: 2G
+    environment:
+      - HEAP_NEWSIZE=128M
+      - MAX_HEAP_SIZE=1024M
+      - CASSANDRA_SEEDS=cassandra-seed
+      - CASSANDRA_CLUSTER_NAME=javazone
+      - CASSANDRA_DC=dc1
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+    
+  #cassandra-node:
+  #  image: cassandra:4.0.1
+  #  depends_on:
+  #    - cassandra-seed
+  #  command: /bin/bash -c "echo 'Waiting for seed node' && sleep 30 && /usr/local/bin//docker-entrypoint.sh cassandra -f"   
+  #  mem_limit: 2G
+  #  environment:
+  #    - HEAP_NEWSIZE=128M
+  #    - MAX_HEAP_SIZE=1024M
+  #    - CASSANDRA_SEEDS=cassandra-seed
+  #    - CASSANDRA_CLUSTER_NAME=javazone
+  #    - CASSANDRA_DC=dc1
+  #    - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+  
+
+# CQLSH
+# docker exec -it `docker ps | grep cassandra:4.0.1 | cut -b 1-12` cqlsh
+
+
+    
+  
