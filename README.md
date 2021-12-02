@@ -579,12 +579,10 @@ Astra is a great DBAAS for Cassandra yet, because it creates you everything you 
       - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
 ```
 
-- *Start the Container*
+- *Start the Container, and **wait 30s** for the node to bootstrap*
 ```bash
 docker-compose up -d
 ```
-
-Wait 30s for the node to bootstrap
 
 - *Open CQLSH in interactive mode*
 ```bash
@@ -602,7 +600,7 @@ mvn exec:java -Dexec.mainClass=com.datastax.samples.E01_ClusterShowMetaData
 mvn exec:java -Dexec.mainClass=com.datastax.samples.E02_CreateKeyspace
 ```
 
-- * You have now a new keyspace 'killrvideo'
+- *You have now a new keyspace 'javazone'*
 
 ```sql
 describe keyspaces;
@@ -620,7 +618,7 @@ mvn exec:java -Dexec.mainClass=com.datastax.samples.E03_CreateSchema
 
 - *You have now 4 tables*
 ```sql
-use killrvideo;
+use javazone;
 describe tables;
 ```
 
@@ -640,16 +638,18 @@ mvn exec:java -Dexec.mainClass=com.datastax.samples.E06_DropSchema
 ```
 
 - *Drop Keyspace*
-```
-mvn exec:java -Dexec.mainClass=com.datastax.samples.E07_DropKeyspace
 ```bash
+mvn exec:java -Dexec.mainClass=com.datastax.samples.E07_DropKeyspace
+```
 
 #### ✅ 10d. Connect to Astra
 
 - *Download the secure-connect-bundle.zip*
+
 ![my-pic](img/scb.png?raw=true)
 
 - *Edit `E08_ConnectToAstraProgrammatic` to override the settings*
+
 ```java
 final String ASTRA_ZIP_FILE     = "/tmp/secure-connect-javazone.zip";
 final String ASTRA_KEYSPACE     = "javazone";
@@ -658,13 +658,14 @@ final String ASTRA_CLIENTSECRET = "<change_me>";
 ```
 
 - *Execute `E08_ConnectToAstraProgrammatic` to override the settings*
+
 ```bash
 mvn exec:java -Dexec.mainClass=com.datastax.samples.E08_ConnectToAstraProgrammatic
 ```
 
-- *Report same edits in the Configuration file `custom_astra.conf`
+- *Report same edits in the Configuration file `custom_astra.conf`*
 
-```typesafe
+```TypeScript
 datastax-java-driver {
 
   basic {
@@ -700,6 +701,40 @@ mvn exec:java -Dexec.mainClass=com.datastax.samples.E09_ConnectToAstraConfFile
 ```
 
 For the following samples the connection remains the same using your configuration file.
+
+- *Execute `E10_GettingStarted` to work with table USERS*
+```bash
+mvn exec:java -Dexec.mainClass=com.datastax.samples.E10_GettingStarted
+```
+
+- *In Astra CQL Console you can now*
+```sql
+select * from javazone.users;
+```
+
+- *Execute `E11_SimpleCrud` to work with table USERS*
+```bash
+mvn exec:java -Dexec.mainClass=com.datastax.samples.E11_SimpleCrud
+```
+
+- *Execute `E12_Paging` to work with table USERS*
+```bash
+mvn exec:java -Dexec.mainClass=com.datastax.samples.E12_Paging
+```
+
+- *Execute `E13_Batches` to work with table USERS*
+```bash
+mvn exec:java -Dexec.mainClass=com.datastax.samples.E13_Batches
+```
+
+- *Execute `E14_ListSetMapAndUdt` to work with nested Structures*
+```bash
+mvn exec:java -Dexec.mainClass=com.datastax.samples.E14_ListSetMapAndUdt
+```
+
+
+
+
 
 #### ✅ 10e. Use the divers
 
