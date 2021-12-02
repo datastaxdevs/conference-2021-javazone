@@ -19,13 +19,14 @@ import com.datastax.oss.driver.api.core.type.DataTypes;
 import com.datastax.oss.driver.api.querybuilder.SchemaBuilder;
 import com.datastax.workshop.todo.TodoEntity;
 
+@SuppressWarnings("deprecation")
 @RunWith(JUnitPlatform.class)
 @ExtendWith(SpringExtension.class)
 @TestPropertySource(locations="/application.properties")
-public class Ex2_CreateSchemaInAstraTest {
+public class E23_CreateSchemaInAstraTest {
 
     /** Logger for the class. */
-    private static Logger LOGGER = LoggerFactory.getLogger(Ex2_CreateSchemaInAstraTest.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(E23_CreateSchemaInAstraTest.class);
 
     @Value("${spring.data.cassandra.username}")
     private String username;

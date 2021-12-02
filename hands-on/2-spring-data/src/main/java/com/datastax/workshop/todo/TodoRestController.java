@@ -53,7 +53,7 @@ public class TodoRestController {
     @GetMapping("/{uid}")
     public ResponseEntity<Todo> findById(HttpServletRequest req, @PathVariable(value = "uid") String uid) {
         Optional<TodoEntity> e = repo.findById(UUID.fromString(uid));
-        if (e.isEmpty()) {
+        if (!e.isPresent()) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(mapAsTodo(e.get()).setUrl(req.getRequestURL().toString()));

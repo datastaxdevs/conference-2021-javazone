@@ -20,13 +20,14 @@ import com.datastax.oss.driver.api.core.CqlSession;
 /**
  * Connecticity to ASTRA
  */
+@SuppressWarnings("deprecation")
 @RunWith(JUnitPlatform.class)
 @ExtendWith(SpringExtension.class)
 @TestPropertySource(locations="/application.properties")
-public class Ex1_ConnectivityToAstraExplicitTest {
+public class E22_SpringDataAstraConnectivity {
     
     /** Logger for the class. */
-    private static Logger LOGGER = LoggerFactory.getLogger(Ex1_ConnectivityToAstraExplicitTest.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(E22_SpringDataAstraConnectivity.class);
     
     @Value("${spring.data.cassandra.username}")
     private String username;

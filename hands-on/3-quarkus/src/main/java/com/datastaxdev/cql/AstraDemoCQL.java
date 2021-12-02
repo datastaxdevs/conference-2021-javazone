@@ -13,6 +13,7 @@ import io.smallrye.common.annotation.Blocking;
 
 @Path("/hello")
 public class AstraDemoCQL {
+    
     @Inject
     QuarkusCqlSession cqlSession;
 
