@@ -766,6 +766,8 @@ mvn exec:java -Dexec.mainClass=com.datastax.samples.E20_BlobAndCodec
 
 ## 11. Drivers Object Mapping
 
+### ✅ 11a. Browse Code
+
 The mapping from Object to Tables is avaible in the native drivers Ad Hoc, no need for an external framework. Get more information in the [reference documentation](https://docs.datastax.com/en/developer/java-driver/4.13/manual/mapper/)
 
 - *We imported the following library*
@@ -816,8 +818,7 @@ public class CommentByUser {
 }
 ```
 
-
-- *Create the DAO*
+- *Look at the DAO*
 
 ```java
 @Dao
@@ -828,7 +829,7 @@ public interface CommentDao extends CassandraSchemaConstants {
     PagingIterable<CommentByUser> retrieveUserComments(UUID userid);
 ```    
 
-- *Create the Mapper*
+- *Look at the Mapper*
 
 ```java
 @Mapper
@@ -842,18 +843,70 @@ public interface CommentDaoMapper {
 }
 ```
 
-- *Run the TEST*
+### ✅ 11b. Run the Setp
 
 ```bash
 mvn exec:java -Dexec.mainClass=com.datastax.samples.E21_ObjectMapping
 ```
 
-
 [🏠 Back to Table of Contents](#-table-of-content)
 
 ## 12. Spring Data Cassandra
 
-gfh
+To isolate the Spring Data work from what we did previous let's create a new keypace.
+
+### ✅ 12a. Create a keyspace
+
+- *Locate the `new keyspace` button on the DB home page*
+
+![image](img/new_keyspace.png?raw=true)
+
+- *Create the `spring_data` keyspace the DB will shoft in maintenance for a few seconds.
+
+![image](img/new_keyspace2.png?raw=true)
+
+### ✅ 12b. Setup the application
+
+- Import the project `2-spring-data` in your IDE. 
+
+- Locate the configuration file `application.properties` in the folder `src/main/resources`.
+
+- Edit the Spring configuration file updating `username`, `password` and `secure-connect-bundle` properties as shown below
+
+```ini
+spring.data.cassandra.schema-action=CREATE_IF_NOT_EXISTS
+spring.data.cassandra.request.timeout=10s
+spring.data.cassandra.connection.connect-timeout=10s
+spring.data.cassandra.connection.init-query-timeout=10s
+
+# -- Keys to be filled
+spring.data.cassandra.keyspace-name=spring_data
+spring.data.cassandra.username=<client_id>
+spring.data.cassandra.password=<client_secret>
+
+datastax.astra.secure-connect-bundle=/tmp/secure-connect-javazone.zip
+# --
+
+### ✅ 12c. Validate configuration and create schema
+
+- *Check Connectivity*
+```bash
+cd ../2-spring-data
+mvn exec:java -Dexec.mainClass=com.datastax.workshop.E22_SpringDataAstraConnectivity
+```
+
+- *Create Schema if needed*
+```bash
+cd ../2-spring-data
+mvn exec:java -Dexec.mainClass=com.datastax.workshop.E23_CreateSchemaInAstraTest
+```
+
+### ✅ 12d. Brose the code
+
+### ✅ 12e. Start the application
+
+
+
 
 [🏠 Back to Table of Contents](#-table-of-content)
 
